@@ -11,57 +11,53 @@ app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:////tmp/test.db"
 app.config["SQLALCHEMY_ECHO"] = True
 db = SQLAlchemy(app)
 
-class User(db.Model):
-    __tablename__ = 'user'
+class Species(db.Model):
+    __tablename__ = 'species'
     # Here we define columns for the table person
     # Notice that each column is also a normal Python instance attribute.
-    id = db.Column(db.Integer, primary_key=True, unique=True, index=True, nullable=False)
-    user_name = db.Column(db.String(20), nullable=False)
-    first_name = db.Column(db.String(30))
-    last_name = db.Column(db.String(30))
+    uid = db.Column(db.Integer, primary_key=True, unique=True, index=True, nullable=False)
+    description = db.Column(db.String(50), nullable=False)
+    name = db.Column(db.String(30), nullable=False)
+    homeworld = db.Column(db.Integer, ForeignKey('planets.uid'), nullable=False)
     email = db.Column(db.String(100))
 
-class Follower(db.Model):
-    __tablename__ = 'follower'
-    # Here we define columns for the table address.
+class Planets(db.Model):
+    __tablename__ = 'planets'
+    # Here we define columns for the table person
     # Notice that each column is also a normal Python instance attribute.
-    user_from_id = db.Column(db.Integer, ForeignKey('user.id'), primary_key=True)
-    user_to_id = db.Column(db.Integer, ForeignKey('user.id'), primary_key=True)
+    uid = db.Column(db.Integer, primary_key=True, unique=True, index=True, nullable=False)
+    name = db.Column(db.String(30), nullable=False)
+    gravity = db.Column(db.String(100), nullable=False)
 
-class Comment(db.Model):
-    __tablename__ = 'comment'
-    # Here we define columns for the table address.
+class People(db.Model):
+    __tablename__ = 'people'
+    # Here we define columns for the table person
     # Notice that each column is also a normal Python instance attribute.
-    id = db.Column(db.Integer, primary_key=True, index=True, nullable=False)
-    comment_text = db.Column(db.String(250))
-    author_id = db.Column(db.Integer, ForeignKey('user.id'), nullable=False)
-    post_id = db.Column(db.Integer, ForeignKey('post.id'), nullable=False)
-
-    def to_dict(self):
-        return {}
+    uid = db.Column(db.Integer, primary_key=True, unique=True, index=True, nullable=False)
+    description = db.Column(db.String(50), nullable=False)
+    name = db.Column(db.String(30), nullable=False)
+    homeworld = db.Column(db.Integer, ForeignKey('planets.uid'), nullable=False)
     
-class Post(db.Model):
-    __tablename__ = 'post'
-    # Here we define columns for the table address.
-    # Notice that each column is also a normal Python instance attribute.
-    id = db.Column(db.Integer, primary_key=True, index=True, unique=True, nullable=False)
-    user_id = db.Column(db.Integer, ForeignKey('user.id'), nullable=False)
-
-    def to_dict(self):
-        return {}
-
-
-class MediaType(enum.Enum):
-    TYPE = "PNG"
-
-class Media(db.Model):
-    __tablename__ = 'media'
+class User(db.Model):
+    __tablename__ = 'user'
     # Here we define columns for the table address.
     # Notice that each column is also a normal Python instance attribute.
     id = db.Column(db.Integer, primary_key=True, index=True, nullable=False)
-    type = db.Column(db.Enum(MediaType), unique=True, nullable=False)
-    url = db.Column(db.String(250), nullable=False, unique=True)
-    post_id = db.Column(db.Integer, ForeignKey('post.id'), nullable=False)
+
+class FavoritesType(enum.Enum):
+    SPECIES = "SPECIES"
+    PLANETS = "PLANETS"
+    PEOPLE = "PEOPLE"
+
+class Favorites(db.Model):
+    __tablename__ = 'favorites'
+    # Here we define columns for the table address.
+    # Notice that each column is also a normal Python instance attribute.
+    id = db.Column(db.Integer, primary_key=True, index=True, nullable=False)
+    user_id = db.Column(db.Integer, ForeignKey('user.id'),index=True, nullable=False)
+    external_id = db.Column(db.Integer, nullable=False)
+    type = db.Column(db.Enum(FavoritesType), nullable=False)
+    name = db.Column(db.String(30), nullable=False)
 
     def to_dict(self):
         return {}
