@@ -42,7 +42,7 @@ class User(db.Model):
     __tablename__ = 'user'
     # Here we define columns for the table address.
     # Notice that each column is also a normal Python instance attribute.
-    id = db.Column(db.Integer, primary_key=True, index=True, nullable=False)
+    id = db.Column(db.Integer, primary_key=True, unique=True, index=True, nullable=False)
 
 class FavoritesType(enum.Enum):
     SPECIES = "SPECIES"
@@ -53,7 +53,7 @@ class Favorites(db.Model):
     __tablename__ = 'favorites'
     # Here we define columns for the table address.
     # Notice that each column is also a normal Python instance attribute.
-    id = db.Column(db.Integer, primary_key=True, index=True, nullable=False)
+    id = db.Column(db.Integer, primary_key=True, unique=True, index=True, nullable=False)
     user_id = db.Column(db.Integer, ForeignKey('user.id'),index=True, nullable=False)
     external_id = db.Column(db.Integer, nullable=False)
     type = db.Column(db.Enum(FavoritesType), nullable=False)
